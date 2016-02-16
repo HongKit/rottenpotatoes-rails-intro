@@ -13,6 +13,11 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.select(:rating).order(:rating).distinct.map(&:rating)
     @selected_ratings = params[:ratings] || {}
+    if not params[:ratings] and params[:sort]
+      redirect_to movies_path(:sort => params[:sort], :ratings => Hash[@all_ratings.map {|rating| [rating, rating]}])
+    elsif params[:ratings] and not params[:sort]
+      redirect_to movies_path(:sort => "title_header", :ratings => @selected_ratings)
+    end
     session[:ratings] = session[:ratings] || Hash[@all_ratings.map {|rating| [rating, rating]}]
     if @selected_ratings == {}
       @selected_ratings = session[:ratings]
