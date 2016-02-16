@@ -16,9 +16,9 @@ class MoviesController < ApplicationController
     if params[:ratings]
       query = Movie.where(rating: params[:ratings].keys)
     end
-    if params[:id] == nil or params[:id] == ''
+    if params[:sort] == nil or params[:id] == ''
       @movies = query
-    elsif params[:id] == 'title_header'
+    elsif params[:sort] == 'title_header'
       @movies = query.order(:title)
       @title_header = 'hilite'
     elsif
