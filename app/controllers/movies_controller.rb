@@ -16,7 +16,7 @@ class MoviesController < ApplicationController
     if not params[:ratings] and params[:sort]
       redirect_to movies_path(:sort => params[:sort], :ratings => Hash[@all_ratings.map {|rating| [rating, rating]}])
     elsif params[:ratings] and not params[:sort]
-      redirect_to movies_path(:sort => "title_header", :ratings => @selected_ratings)
+      redirect_to movies_path(:sort => "", :ratings => @selected_ratings)
     end
     session[:ratings] = session[:ratings] || Hash[@all_ratings.map {|rating| [rating, rating]}]
     if @selected_ratings == {}
@@ -26,14 +26,14 @@ class MoviesController < ApplicationController
       session[:ratings] = @selected_ratings
     end
     query = Movie.where(rating: @selected_ratings.keys)
-    if params[:sort] == nil or params[:id] == ''
-      @movies = query
-    elsif params[:sort] == 'title_header'
+    if params[:sort] == 'title_header'
       @movies = query.order(:title)
       @title_header = 'hilite'
-    elsif
+    elsif params[:sort] == 'release_date_header'
       @movies = query.order(:release_date)
       @release_date_header = 'hilite'
+    else
+      @movies = query
     end
   end
 
