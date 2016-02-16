@@ -11,13 +11,18 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.select(:rating).order(:rating).distinct.map(&:rating)
+    query = Movie.all
+    if params[:ratings]
+      query = Movie.where(rating: params[:ratings].keys)
+    end
     if params[:id] == nil or params[:id] == ''
-      @movies = Movie.all
+      @movies = query
     elsif params[:id] == 'title_header'
-      @movies = Movie.order(:title)
+      @movies = query.order(:title)
       @title_header = 'hilite'
     elsif
-      @movies = Movie.order(:release_date)
+      @movies = query.order(:release_date)
       @release_date_header = 'hilite'
     end
   end
