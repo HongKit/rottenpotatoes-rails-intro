@@ -12,10 +12,8 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.select(:rating).order(:rating).distinct.map(&:rating)
-    query = Movie.all
-    if params[:ratings]
-      query = Movie.where(rating: params[:ratings].keys)
-    end
+    @selected_ratings = params[:ratings] || Hash[@all_ratings.map {|rating| [rating, rating]}]
+    query = Movie.where(rating: @selected_ratings.keys)
     if params[:sort] == nil or params[:id] == ''
       @movies = query
     elsif params[:sort] == 'title_header'
